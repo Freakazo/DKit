@@ -33,14 +33,14 @@ def start_server():
 
     global server_path
     global client_path
-    server_path = path.join(dcd_path, 'dcd-server')
-    client_path = path.join(dcd_path, 'dcd-client')
+    server_path = os.path.join(dcd_path, 'dcd-server')
+    client_path = os.path.join(dcd_path, 'dcd-client')
 
-    if not path.exists(server_path):
+    if not os.path.exists(server_path):
         sublime.error_message('DCD server doesn\'t exist in the path specified:\n' + server_path + '\n\nSetup the path in DCD package settings and then restart sublime to get things working.')
         return False
 
-    if not path.exists(client_path):
+    if not os.path.exists(client_path):
         sublime.error_message('DCD client doesn\'t exist in the path specified:\n' + client_path + '\n\nSetup the path in DCD package settings and then restart sublime to get things working.')
         return False
 
@@ -191,8 +191,8 @@ class DubCreatePackageTextCommand(sublime_plugin.TextCommand):
 class DubCreateProjectFromPackageCommand(sublime_plugin.TextCommand):
     def run(self, edit):
         view = self.view
-        package_folder = path.dirname(view.file_name())
-        package_file = path.basename(view.file_name())
+        package_folder = os.path.dirname(view.file_name())
+        package_file = os.path.basename(view.file_name())
         if package_file != 'package.json':
             sublime.error_message('Please open the `package.json` file and then run the command again.')
             return
@@ -209,15 +209,15 @@ class DubCreateProjectFromPackageCommand(sublime_plugin.TextCommand):
         for package in description['packages']:
             base_path = package['path']
             for f in package['files']:
-                folder = path.join(base_path, path.dirname(f['path']))
+                folder = os.path.join(base_path, os.path.dirname(f['path']))
                 include_paths.add(folder)
 
         folders = [{'path': folder} for folder in include_paths]
         settings = {'include_paths': [f for f in include_paths]}
         project_settings = {'folders': folders, 'settings': settings}
 
-        project_file = path.join(package_folder, main_package + '.sublime-project')
-        if path.exists(project_file):
+        project_file = os.path.join(package_folder, main_package + '.sublime-project')
+        if os.path.exists(project_file):
             sublime.error_message('A Sublime Text project already exists in the folder. Aborting.') #TODO: change into something more user-friendly
             return
 
